@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation with {{ other_user.username }} - Campus Booking{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <a href="{% url 'messages' %}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
+                    <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                        {{ other_user.username|first|upper }}
+                    </div>
+                    <h2 class="ml-3 text-xl font-bold text-gray-900 dark:text-white">
+                        <a href="{% url 'user_profile' other_user.username %}" class="hover:text-blue-600 dark:hover:text-blue-400">
+                            {{ other_user.username }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="space-y-4 mb-6 max-h-[60vh] overflow-y-auto" id="messages-container">
+                {% for message in messages %}
+                    <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+                        <div class="max-w-[70%] {% if message.sender == request.user %}bg-blue-600 text-white{% else %}bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white{% endif %} rounded-lg px-4 py-2">
+                            <p class="text-sm">{{ message.content }}</p>
+                            <p class="text-xs mt-1 {% if message.sender == request.user %}text-blue-200{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                                {{ message.created_at|timesince }} ago
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Message Input -->
+            <form id="message-form" class="flex items-center space-x-4" method="POST" action="{% url 'send_message' conversation.id %}">
+                {% csrf_token %}
+                <input type="text" name="content" class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Type your message..." required>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        // Scroll to bottom of messages
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Handle message form submission
+        const messageForm = document.getElementById('message-form');
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Add new message to the container
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'flex justify-end';
+                    messageDiv.innerHTML = `
+                        <div class="max-w-[70%] bg-blue-600 text-white rounded-lg px-4 py-2">
+                            <p class="text-sm">${data.message.content}</p>
+                            <p class="text-xs mt-1 text-blue-200">Just now</p>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    // Clear input
+                    this.reset();
+                } else {
+                    console.error('Error:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to send message. Please try again.');
+            });
+        });
+    });
+</script>
+{% endblock %} 

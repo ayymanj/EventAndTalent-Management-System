@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Profile Header -->
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+            <div class="flex items-center space-x-4">
+                <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                    {{ profile_user.username|first|upper }}
+                </div>
+                <div class="flex-1">
+                    <h1 class="text-2xl font-bold text-gray-900">{{ profile_user.username }}</h1>
+                    <p class="text-gray-500">{{ profile_user.profile.get_role_display }}</p>
+                    {% if profile_user.profile.role == 'performer' and profile_user.profile.rating %}
+                    <div class="mt-2 flex items-center">
+                        <span class="text-yellow-400">★</span>
+                        <span class="ml-1 text-gray-600">{{ profile_user.profile.rating }}/5.0</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if request.user != profile_user %}
+                <div>
+                    <a href="{% url 'start_conversation' profile_user.id %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        Message
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="md:col-span-2 space-y-6">
+                <!-- About Section -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">About</h2>
+                    <p class="text-gray-700">{{ profile_user.profile.bio|default:"No bio provided." }}</p>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
+                    <div class="flex flex-wrap gap-2">
+                        {% for skill in profile_user.profile.skills.all %}
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{{ skill.name }}</span>
+                        {% empty %}
+                        <p class="text-gray-500">No skills listed.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <!-- Contact Information -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+                    <div class="space-y-2">
+                        <p class="text-gray-700">
+                            <span class="font-medium">Email:</span> {{ profile_user.email }}
+                        </p>
+                        {% if profile_user.profile.phone %}
+                        <p class="text-gray-700">
+                            <span class="font-medium">Phone:</span> {{ profile_user.profile.phone }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Upcoming Events Section -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+                    {% if upcoming_events %}
+                        <div class="space-y-4">
+                            {% for event in upcoming_events %}
+                                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                    <h3 class="font-medium text-gray-900">{{ event.title }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        {{ event.date|date:"F j, Y" }} at {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}
+                                    </p>
+                                    {% if event.location %}
+                                        <p class="text-sm text-gray-500">Location: {{ event.location }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-500">No upcoming events</p>
+                    {% endif %}
+                </div>
+                <!-- Availability Section -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Availability</h2>
+                    {% if availabilities %}
+                        <ul class="divide-y divide-gray-200">
+                            {% for avail in availabilities %}
+                            <li class="py-2">
+                                <span class="font-medium text-gray-800">{{ avail.date|date:"F j, Y" }}</span>
+                                <span class="ml-2 text-gray-600">{{ avail.start_time|time:"g:i A" }} - {{ avail.end_time|time:"g:i A" }}</span>
+                                {% if avail.note %}<span class="ml-2 text-gray-500 italic">({{ avail.note }})</span>{% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-gray-500">No availability listed</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

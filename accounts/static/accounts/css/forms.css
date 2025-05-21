@@ -1,0 +1,27 @@
+/* Form field styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
+}
+
+/* Radio button styling */
+input[type="radio"] {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300;
+}
+
+/* Error message styling */
+.errorlist {
+    @apply mt-2 text-sm text-red-600;
+}
+
+/* Form field wrapper */
+.form-field {
+    @apply mb-4;
+}
+
+/* Label styling */
+label {
+    @apply block text-sm font-medium text-gray-700;
+} 

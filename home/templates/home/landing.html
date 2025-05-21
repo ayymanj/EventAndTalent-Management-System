@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Campus Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+  <!-- Hero Section -->
+  <section class="text-center py-20 bg-blue-600 text-white">
+    <h1 class="text-4xl font-bold">Book the Best. Perform the Best.</h1>
+    <p class="mt-4 text-lg">Your one-stop platform for booking and showcasing campus talent.</p>
+    <div class="mt-6">
+      <a href="{% url 'signup' %}" class="bg-white text-blue-600 px-6 py-3 rounded mr-4 font-semibold">Join as
+        Performer</a>
+      <a href="{% url 'signup' %}" class="bg-blue-800 px-6 py-3 rounded font-semibold">Create an Event</a>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 px-4 max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-center mb-8">How It Works</h2>
+    <div class="grid md:grid-cols-3 gap-6 text-center">
+      <div>
+        <h3 class="text-lg font-semibold">1. Sign Up</h3>
+        <p>Join as an organizer or performer.</p>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">2. Connect</h3>
+        <p>Apply to events or book performers.</p>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">3. Celebrate</h3>
+        <p>Make your event unforgettable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-white py-16 px-4">
+    <h2 class="text-2xl font-bold text-center mb-8">What Our Users Say</h2>
+    <div class="max-w-4xl mx-auto text-center">
+      <blockquote class="italic">"I found the perfect band for our college fest — so easy!"</blockquote>
+      <p class="mt-2 text-sm text-gray-500">– Anika, Event Organizer</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 py-6 text-center text-sm text-gray-600">
+    <p>&copy; 2025 CampusBooking. All rights reserved.</p>
+    <div class="mt-2">
+      <a href="#" class="mx-2">About</a>
+      <a href="#" class="mx-2">Contact</a>
+      <a href="#" class="mx-2">FAQs</a>
+    </div>
+  </footer>
+</body>
+
+</html>

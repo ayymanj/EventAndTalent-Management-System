@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-blue-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-white sm:text-5xl md:text-6xl">
+                Campus Booking
+            </h1>
+            <p class="mt-3 max-w-md mx-auto text-base text-blue-100 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                Connect performers with event organizers. Book talent for your next event or find performance opportunities.
+            </p>
+            <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                {% if not user.is_authenticated %}
+                <div class="rounded-md shadow">
+                    <a href="{% url 'signup' %}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                        Get Started
+                    </a>
+                </div>
+                <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+                    <a href="{% url 'login' %}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                        Log In
+                    </a>
+                </div>
+                {% else %}
+                <div class="rounded-md shadow">
+                    <a href="{% url 'event_list' %}" 
+                    class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                        Browse Events
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="mt-4 max-w-md mx-auto flex justify-center">
+                {% if user.is_authenticated %}
+                <a href="{% url 'user_list' %}" 
+                class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Browse performers and organizers
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" 
+                class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Log in to browse performers and organizers
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900">Platform Features</h2>
+            <p class="mt-4 text-xl text-gray-600">Everything you need to create and manage events</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- For Organizers -->
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-4">For Organizers</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Create and manage events with ease</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Find and book talented performers</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Manage event details and schedules</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- For Performers -->
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-4">For Performers</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Find performance opportunities</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Showcase your talent to organizers</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-gray-700">Build your performance portfolio</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+            <p class="text-xl mb-8">Join our community today and start creating amazing events or showcasing your talent.</p>
+            {% if not user.is_authenticated %}
+            <div class="space-x-4">
+                <a href="{% url 'signup' %}" 
+                   class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Sign Up Now
+                </a>
+                <a href="{% url 'login' %}" 
+                   class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+                    Log In
+                </a>
+            </div>
+            {% else %}
+            <a href="{% url 'event_list' %}" 
+               class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                Browse Events
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white text-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- About Section -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                <p class="text-gray-500">
+                    We connect event organizers with talented performers to create memorable experiences.
+                    Our platform makes it easy to discover, book, and manage events.
+                </p>
+            </div>
+            <!-- Contact Section -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                <ul class="space-y-2 text-gray-500">
+                    <li>Email: support@example.com</li>
+                    <li>Phone: (123) 456-7890</li>
+                    <li>Address: 123 Main Street, City, State</li>
+                </ul>
+            </div>
+            <!-- FAQs Section -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">FAQs</h3>
+                <ul class="space-y-2 text-gray-500">
+                    <li><a href="#" class="hover:text-blue-600">How do I create an event?</a></li>
+                    <li><a href="#" class="hover:text-blue-600">How do I apply as a performer?</a></li>
+                    <li><a href="#" class="hover:text-blue-600">What are the fees?</a></li>
+                    <li><a href="#" class="hover:text-blue-600">How do I get paid?</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-200 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Your Platform Name. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %} 

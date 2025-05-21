@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}All Users - Campus Booking{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">All Users</h1>
+    <form method="get" class="mb-6 flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0">
+        <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search by username or email..." class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <div class="flex space-x-2 mt-2 md:mt-0">
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" class="px-4 py-2 rounded-md text-sm font-medium {% if not request.GET.role %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-blue-50{% endif %}">All</a>
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}role=performer" class="px-4 py-2 rounded-md text-sm font-medium {% if request.GET.role == 'performer' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-blue-50{% endif %}">Performers</a>
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}role=organizer" class="px-4 py-2 rounded-md text-sm font-medium {% if request.GET.role == 'organizer' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-blue-50{% endif %}">Organizers</a>
+        </div>
+    </form>
+    <div class="bg-white shadow rounded-lg overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for user in users %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <a href="{% url 'user_profile' user.username %}" class="text-blue-600 hover:underline font-medium">{{ user.username }}</a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ user.email }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ user.profile.get_role_display }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if request.user != user %}
+                        <a href="{% url 'start_conversation' user.id %}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded text-white bg-blue-600 hover:bg-blue-700">
+                            Message
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

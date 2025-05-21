@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">
+                {% if event %}Edit Event{% else %}Create New Event{% endif %}
+            </h1>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold">Basic Information</h2>
+                    
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" name="title" id="title" 
+                               value="{{ event.title|default:'' }}"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               required>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="description" id="description" rows="4"
+                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                  required>{{ event.description|default:'' }}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select name="category" id="category"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                required>
+                            <option value="">Select a category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" 
+                                    {% if event.category.id == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Date and Time -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold">Date and Time</h2>
+                    
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" name="date" id="date"
+                               value="{{ event.date|date:'Y-m-d'|default:'' }}"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-gray-700">Start Time</label>
+                            <input type="time" name="start_time" id="start_time"
+                                   value="{{ event.start_time|time:'H:i'|default:'' }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   required>
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700">End Time</label>
+                            <input type="time" name="end_time" id="end_time"
+                                   value="{{ event.end_time|time:'H:i'|default:'' }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold">Venue</h2>
+                    
+                    <div>
+                        <label for="venue" class="block text-sm font-medium text-gray-700">Venue</label>
+                        <select name="venue" id="venue"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                required>
+                            <option value="">Select a venue</option>
+                            {% for venue in venues %}
+                            <option value="{{ venue.id }}"
+                                    {% if event.venue.id == venue.id %}selected{% endif %}>
+                                {{ venue.name }} - {{ venue.city }}, {{ venue.state }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Talent Needs -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold">Talent Needs</h2>
+                    <div id="talent-needs-container">
+                        {% if event.talent_needs.all %}
+                            {% for talent in event.talent_needs.all %}
+                            <div class="talent-need border rounded-lg p-4 mb-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Talent Type</label>
+                                        <select name="talent_type[]" 
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                required>
+                                            {% for type in talent_types %}
+                                            <option value="{{ type.0 }}"
+                                                    {% if talent.talent_type == type.0 %}selected{% endif %}>
+                                                {{ type.1 }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Quantity Needed</label>
+                                        <input type="number" name="quantity_needed[]" 
+                                               value="{{ talent.quantity_needed }}"
+                                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                               required min="1">
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                                    <textarea name="talent_description[]" rows="2"
+                                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                              required>{{ talent.description }}</textarea>
+                                </div>
+                                <button type="button" class="mt-2 text-red-600 hover:text-red-800 text-sm"
+                                        onclick="removeTalentNeed(this)">
+                                    Remove
+                                </button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <button type="button" 
+                            class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200"
+                            onclick="addTalentNeed()">
+                        Add Talent Need
+                    </button>
+                </div>
+
+                <!-- Additional Settings -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold">Additional Settings</h2>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" name="allow_manual_invites" id="allow_manual_invites"
+                               {% if event.allow_manual_invites %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="allow_manual_invites" class="ml-2 block text-sm text-gray-700">
+                            Allow manual talent invites
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4">
+                    <button type="submit" name="action" value="draft"
+                            class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                        Save as Draft
+                    </button>
+                    <button type="submit" name="action" value="publish"
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                        Publish Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function addTalentNeed() {
+    const container = document.getElementById('talent-needs-container');
+    const template = `
+        <div class="talent-need border rounded-lg p-4 mb-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Talent Type</label>
+                    <select name="talent_type[]" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required>
+                        {% for type in talent_types %}
+                        <option value="{{ type.0 }}">{{ type.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Quantity Needed</label>
+                    <input type="number" name="quantity_needed[]" 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                           required min="1">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea name="talent_description[]" rows="2"
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          required></textarea>
+            </div>
+            <button type="button" class="mt-2 text-red-600 hover:text-red-800 text-sm"
+                    onclick="removeTalentNeed(this)">
+                Remove
+            </button>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', template);
+}
+
+function removeTalentNeed(button) {
+    button.closest('.talent-need').remove();
+}
+</script>
+{% endblock %} 
